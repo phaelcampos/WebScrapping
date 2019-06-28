@@ -1,14 +1,14 @@
 from bs4 import BeautifulSoup
 import requests
-import json
+# import json
+import csv
 
 url= 'http://ethans_fake_twitter_site.surge.sh/'                        #Saving the url on a variable
 
 response = requests.get(url,timeout=5)                                  #Requiring the url
 content = BeautifulSoup(response.content,"html.parser")#
 
-
-#tweet = content.find('p', attrs={"class": "content"}).text#filtering only the tag <p> with the class named "content"//// .text=takes only the content of the <p>
+#tweet = content.find('p', attrs={"class": "content"}).text             #filtering only the tag <p> with the class named "content"//// .text=takes only the content of the <p>
 
 tweetArr = []
 for tweet in content.findAll('div', attrs={"class":"tweetcontainer"}):  #Put all the data in a dict
@@ -21,5 +21,10 @@ for tweet in content.findAll('div', attrs={"class":"tweetcontainer"}):  #Put all
     }
     tweetArr.append((tweetObject))
 
-with open('twitterData.json', 'w') as outfile:
-    json.dump(tweetArr, outfile)
+# with open('twitterData.json', 'w') as outfile: #creating a Json file to put all
+#     json.dump(tweetArr, outfile)
+
+with open('tweetScrap.csv', 'w') as m:  # Just use 'w' mode in 3.x
+    w = csv.DictWriter(m, tweetObject.keys())
+    w.writeheader()
+    w.writerow(tweetObject)
